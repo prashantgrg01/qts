@@ -1,0 +1,75 @@
+{% extends "portal/layout.html" %}
+
+{% block content %}
+    <h1 class="title">Ticket Portal</h1>
+    <hr>
+    <form action="{% url 'confirmation' %}" method="post" id="payment_form">
+        {% csrf_token %}
+        <div class="row">
+            <p class="text-warning">Please provide the full name of the attendee who will be present on the day of event!</p>
+            <input type="text" name="name" maxlength="100" class="form-control" placeholder="Full name" required id="id_name" />
+        </div>
+        <div class="row">
+            <input type="number" name="num_of_tickets" min="1" max="100" class="form-control" placeholder="No. of tickets" required id="id_num_of_tickets" />
+        </div>
+        <div class="row">
+            <select name="ticket_type" class="form-control" required id="id_ticket_type">
+                <option value="" selected>Ticket Type</option>
+                <option value="Regular">Regular - 2500/-</option>
+                <option value="Platinum">Platinum - 3500/-</option>
+                <option value="VIP">VIP - 10000/-</option>
+            </select>
+        </div>
+        <div class="row">
+            <input class="btn btn-success form-control" id="btn-order" type="submit" value="Order Ticket">
+        </div>
+    </form>
+
+    <script src="https://checkout.stripe.com/checkout.js"></script>
+    <script>
+        var handler = StripeCheckout.configure({
+            key: 'pk_test_AKxyKAlHdI8LumKuL3c4wufk',
+            image: 'https://stripe.com/img/documentation/checkout/marketplace.png',
+            locale: 'auto',
+            token: function(token) {
+                // You can access the token ID with `token.id`.
+                // Get the token ID to your server-side code for use.
+                var form = document.getElementById('payment_form');
+                var hiddenInput = document.createElement('input');
+                hiddenInput.setAttribute('type', 'hidden');
+                hiddenInput.setAttribute('name', 'stripeToken');
+                hiddenInput.setAttribute('value', token.id);
+                form.appendChild(hiddenInput);
+
+                // Submit the form
+                form.submit();
+            }
+        });
+
+        document.getElementById('btn-order').addEventListener('click', function(e) {
+            if (document.getElementById('id_name').value != "" && document.getElementById('id_num_of_tickets').value != "" && document.getElementById('id_ticket_type').value != "") {
+                ticket_type = document.getElementById("id_ticket_type").value
+                num_of_tickets = document.getElementById("id_num_of_tickets").value
+                if (ticket_type == "Regular") {
+                    price = num_of_tickets * 2500;
+                } else if (ticket_type == "Platinum") {
+                    price = num_of_tickets * 3500
+                } else {
+                    price = num_of_tickets * 10000
+                }
+                // Open Checkout with further options:
+                handler.open({
+                    name: 'Ticket Payment Page',
+                    description: 'Pay securely for your tickets',
+                    amount: price
+                });
+                e.preventDefault();
+            }
+        });
+
+        // Close Checkout on page navigation:
+        window.addEventListener('popstate', function() {
+            handler.close();
+        });
+    </script>
+{% endblock %}

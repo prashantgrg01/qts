@@ -1,0 +1,15 @@
+.title {
+    text-align: center;
+    margin: 2rem 0;
+}
+form {
+    width: 30rem;
+    margin: auto; 
+}
+.form-control {
+    margin-bottom: 0.75rem;
+}
+.qr-code {
+    border: 3px solid #000;
+    margin: 3rem auto;
+}

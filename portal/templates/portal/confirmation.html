@@ -1,0 +1,9 @@
+{% extends "portal/layout.html" %}
+
+{% block content %}
+    <h1 class="title">Ticket Confirmation Page</h1>
+    <hr>
+    <p class="text-center text-warning">Don't reload the page just yet!</p>
+    <img class="img-responsive qr-code" src="/{{ ticket.code_img.url }}">
+    <p class="text-center">Please save the above confirmed QR Code as image or take a screenshot and keep it safe until the event day.</p>
+{% endblock %}
