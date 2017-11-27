@@ -1,1 +1,1 @@
-# qts
+# qts - QR Code Ticket System Prototype
